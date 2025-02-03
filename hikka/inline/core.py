@@ -193,7 +193,7 @@ class InlineManager(
 
         self.bot.get_updates = new
 
-        self._task = asyncio.ensure_future(self._dp.start_polling(self._bot))
+        self._task = asyncio.ensure_future(self._dp.start_polling(self._bot, handle_signals=False))
         self._cleaner_task = asyncio.ensure_future(self._cleaner())
 
     async def _stop(self):
