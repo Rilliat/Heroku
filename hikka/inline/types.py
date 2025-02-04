@@ -173,6 +173,8 @@ class InlineCall(CallbackQuery, InlineMessage):
             try: setattr(self, attr, getattr(call, attr, None))
             except: pass
 
+        self.as_(inline_manager.bot)
+
         InlineMessage.__init__(
             self,
             inline_manager,
