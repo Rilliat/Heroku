@@ -341,7 +341,7 @@ class TelegramLogsHandler(logging.Handler):
     async def sender(self):
         async with self._send_lock:
             self._queue = {
-                await client_id: utils.chunks(
+                client_id: utils.chunks(
                     utils.escape_html(
                         "".join(
                             [
