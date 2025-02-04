@@ -303,7 +303,7 @@ class TelegramLogsHandler(logging.Handler):
                 else {
                     "text": "🪲 Start debugger",
                     "callback": self._start_debugger,
-                    "args": (item, self._mods[0].inline.bot,),
+                    "args": (item,),
                 }
             )
         ]
@@ -312,7 +312,6 @@ class TelegramLogsHandler(logging.Handler):
         self,
         call: "InlineCall",  # type: ignore  # noqa: F821
         item: HikkaException,
-        bot: Bot,
     ):
         if not self.web_debugger:
             self.web_debugger = WebDebugger()
@@ -326,8 +325,7 @@ class TelegramLogsHandler(logging.Handler):
             reply_markup=self._gen_web_debug_button(item),
         )
 
-        await bot.answer_callback_query(
-            call.id,
+        await call.answer(
             (
                 "Web debugger started. You can get PIN using .debugger command. \n⚠️"
                 " !DO NOT GIVE IT TO ANYONE! ⚠️"
@@ -362,17 +360,17 @@ class TelegramLogsHandler(logging.Handler):
             }
 
             self._exc_queue = {
-                str(client_id): [
-                    self._mods[str(client_id)].inline.bot.send_message(
-                        self._mods[str(client_id)].logchat,
+                client_id: [
+                    self._mods[client_id].inline.bot.send_message(
+                        self._mods[client_id].logchat,
                         item[0].message,
-                        reply_markup=self._mods[str(client_id)].inline.generate_markup(
+                        reply_markup=self._mods[client_id].inline.generate_markup(
                             [
                                 {
                                     "text": "🪐 Full traceback",
                                     "callback": self._show_full_trace,
                                     "args": (
-                                        self._mods[str(client_id)].inline.bot,
+                                        self._mods[client_id].inline.bot,
                                         item[0],
                                     ),
                                     "disable_security": True,
@@ -383,7 +381,7 @@ class TelegramLogsHandler(logging.Handler):
                     )
                     for item in self.tg_buff
                     if isinstance(item[0], HikkaException)
-                    and (not item[1] or item[1] == str(client_id) or self.force_send_all)
+                    and (not item[1] or item[1] == client_id or self.force_send_all)
                 ]
                 for client_id in self._mods
             }
@@ -391,7 +389,6 @@ class TelegramLogsHandler(logging.Handler):
             for exceptions in self._exc_queue.values():
                 for exc in exceptions:
                     await exc
-
 
             self.tg_buff = []
 
@@ -403,7 +400,7 @@ class TelegramLogsHandler(logging.Handler):
                     logfile = io.BytesIO(
                         "".join(self._queue[client_id]).encode("utf-8")
                     )
-                    logfile.name = "hikka-logs.txt"
+                    logfile.name = "heroku-logs.txt"
                     logfile.seek(0)
                     await self._mods[client_id].inline.bot.send_document(
                         self._mods[client_id].logchat,
