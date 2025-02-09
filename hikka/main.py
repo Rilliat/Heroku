@@ -995,6 +995,7 @@ class Hikka:
         self.loop.close()
 
 
-herokutl.extensions.html.CUSTOM_EMOJIS = False
+herokutl.extensions.html.CUSTOM_EMOJIS = False if "--test-backend" in " ".join(sys.argv) \
+    else not get_config_key("disable_custom_emojis")
 
 hikka = Hikka()
