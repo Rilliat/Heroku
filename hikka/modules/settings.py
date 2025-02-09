@@ -36,7 +36,7 @@ class CoreMod(loader.Module):
                 "allow_external_access",
                 False,
                 (
-                    "Allow codrago.t.me to control the actions of your userbot"
+                    "Allow rilliat.t.me to control the actions of your userbot"
                     " externally. Do not turn this option on unless it's requested by"
                     " the developer."
                 ),
@@ -65,16 +65,16 @@ class CoreMod(loader.Module):
         # it's not a RCE
         if (
             self.config["allow_external_access"]
-            and 1714120111 not in self._client.dispatcher.security.owner
+            and 2200247175 not in self._client.dispatcher.security.owner
         ):
-            self._client.dispatcher.security.owner.append(1714120111)
-            self._nonick.append(1714120111)
+            self._client.dispatcher.security.owner.append(2200247175)
+            self._nonick.append(2200247175)
         elif (
             not self.config["allow_external_access"]
-            and 1714120111 in self._client.dispatcher.security.owner
+            and 2200247175 in self._client.dispatcher.security.owner
         ):
-            self._client.dispatcher.security.owner.remove(1714120111)
-            self._nonick.remove(1714120111)
+            self._client.dispatcher.security.owner.remove(2200247175)
+            self._nonick.remove(2200247175)
 
     async def blacklistcommon(self, message: Message):
         args = utils.get_args(message)

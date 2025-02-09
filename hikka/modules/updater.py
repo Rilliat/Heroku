@@ -40,7 +40,7 @@ class UpdaterMod(loader.Module):
         self.config = loader.ModuleConfig(
             loader.ConfigValue(
                 "GIT_ORIGIN_URL",
-                "https://github.com/coddrago/Heroku",
+                "https://github.com/Rilliat/Heroku",
                 lambda: self.strings("origin_cfg_doc"),
                 validator=loader.validators.Link(),
             ),
@@ -104,7 +104,7 @@ class UpdaterMod(loader.Module):
                 "https://t.me/hikari_assets/71",
                 caption=self.strings("update_required").format(
                     utils.get_git_hash()[:6],
-                    '<a href="https://github.com/coddrago/Heroku/compare/{}...{}">{}</a>'.format(
+                    '<a href="https://github.com/Rilliat/Heroku/compare/{}...{}">{}</a>'.format(
                         utils.get_git_hash()[:12],
                         self.get_latest()[:12],
                         self.get_latest()[:6],
