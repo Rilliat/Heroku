@@ -61,6 +61,7 @@ class Web:
         self.data_root = kwargs.pop("data_root")
         self.connection = kwargs.pop("connection")
         self.proxy = kwargs.pop("proxy")
+        self.test_backend = kwargs.pop("test_backend")
 
         self.app.router.add_get("/", self.root)
         self.app.router.add_put("/set_api", self.set_tg_api)
@@ -288,8 +289,13 @@ class Web:
         return web.Response(status=201, body=self._qr_login.url)
 
     def _get_client(self) -> CustomTelegramClient:
+        if self.test_backend is True:
+            session = MemorySession()
+            session.set_dc(2, '149.154.167.40', 443)
+        else:
+            session = MemorySession()
         return CustomTelegramClient(
-            MemorySession(),
+            session,
             self.api_token.ID,
             self.api_token.HASH,
             connection=self.connection,

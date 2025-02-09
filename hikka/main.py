@@ -357,6 +357,12 @@ def parse_arguments() -> dict:
         default=True,
         help="Do not print colorful output using ANSI escapes",
     )
+    parser.add_argument(
+        "--test-backend",
+        dest="test_backend",
+        action="store_true",
+        help="Use test Telegram backend",
+    )
     arguments = parser.parse_args()
     logging.debug(arguments)
     return arguments
@@ -510,6 +516,7 @@ class Hikka:
             api_token=self.api_token,
             proxy=self.proxy,
             connection=self.conn,
+            test_backend=self.arguments.test_backend,
         )
 
     async def _get_token(self):
@@ -543,6 +550,7 @@ class Hikka:
             client._tg_id = telegram_id
             client.tg_id = telegram_id
             client.hikka_me = me
+            client.hikka_me.premium = False
 
         session = SQLiteSession(
             os.path.join(
@@ -616,8 +624,13 @@ class Hikka:
             return False
 
         if not self.web:
+            if self.arguments.test_backend is True:
+                session = MemorySession()
+                session.set_dc(2, '149.154.167.40', 443)
+            else:
+                session = MemorySession()
             client = CustomTelegramClient(
-                MemorySession(),
+                session,
                 self.api_token.ID,
                 self.api_token.HASH,
                 connection=self.conn,
@@ -747,6 +760,9 @@ class Hikka:
         """
         for session in self.sessions.copy():
             try:
+                if self.arguments.test_backend is True:
+                    session.set_dc(2, '149.154.167.40', 443)
+
                 client = CustomTelegramClient(
                     session,
                     self.api_token.ID,
@@ -804,6 +820,7 @@ class Hikka:
             client._tg_id = me.id
             client.tg_id = me.id
             client.hikka_me = me
+            client.hikka_me.premium = False
             while await self.amain(first, client):
                 first = False
 
@@ -978,6 +995,6 @@ class Hikka:
         self.loop.close()
 
 
-herokutl.extensions.html.CUSTOM_EMOJIS = not get_config_key("disable_custom_emojis")
+herokutl.extensions.html.CUSTOM_EMOJIS = False
 
 hikka = Hikka()

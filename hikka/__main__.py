@@ -34,6 +34,12 @@ if (
         print("Added NO_SUDO in your environment variables")
         restart()
 
+if "--test-backend" in " ".join(sys.argv):
+    print("⚠️" * 15)
+    print("Your Heroku is running on TEST BACKEND")
+    print("Do not report any bugs, as this mode is very unstable.")
+    print("Thank you")
+    print("⚠️" * 15)
 
 def deps():
     subprocess.run(

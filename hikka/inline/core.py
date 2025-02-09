@@ -11,6 +11,7 @@ import contextlib
 import logging
 import time
 import typing
+import sys
 
 from aiogram import Bot, Dispatcher
 from aiogram.types import ParseMode
@@ -122,6 +123,8 @@ class InlineManager(
 
         self.init_complete = True
 
+        if "--test-backend" in " ".join(sys.argv):
+            self._token += '/test'
         self.bot = Bot(token=self._token, parse_mode=ParseMode.HTML)
         Bot.set_current(self.bot)
         self._bot = self.bot
